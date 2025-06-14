@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oto Yıkama Kayıt Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Sayfa geçişlerini yumuşatmak için */
+        body {
+            transition: background-color 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-800">Oto Yıkama Takip Paneli</h1>
+            <div id="currentDate" class="text-sm text-gray-600"></div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4 text-blue-800">Yeni Kayıt Ekle</h2>
+                    <form id="carWashForm" class="space-y-4">
+                        <div>
+                            <label for="plateNumber" class="block text-sm font-medium text-gray-700 mb-1">Plaka</label>
+                            <input type="text" id="plateNumber" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="34 ABC 123" required>
+                        </div>
+                        <div>
+                            <label for="carModel" class="block text-sm font-medium text-gray-700 mb-1">Araç Modeli</label>
+                            <input type="text" id="carModel" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Marka / Model">
+                        </div>
+                        <div>
+                            <label for="carType" class="block text-sm font-medium text-gray-700 mb-1">Araç Tipi</label>
+                            <select id="carType" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="Sedan">Sedan</option>
+                                <option value="SUV">SUV</option>
+                                <option value="Hatchback">Hatchback</option>
+                                <option value="Minivan">Minivan</option>
+                                <option value="Ticari">Ticari</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Hizmetler</label>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="service1" value="Dış Yıkama" class="service-checkbox mr-2">
+                                    <label for="service1" class="text-sm text-gray-700">Dış Yıkama</label>
+                                    <input type="number" placeholder="Fiyat" class="service-price ml-auto w-24 px-2 py-1 border border-gray-300 rounded-md" data-service="Dış Yıkama">
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="service2" value="İç Temizlik" class="service-checkbox mr-2">
+                                    <label for="service2" class="text-sm text-gray-700">İç Temizlik</label>
+                                    <input type="number" placeholder="Fiyat" class="service-price ml-auto w-24 px-2 py-1 border border-gray-300 rounded-md" data-service="İç Temizlik">
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="service3" value="Detaylı İç Temizlik" class="service-checkbox mr-2">
+                                    <label for="service3" class="text-sm text-gray-700">Detaylı İç Temizlik</label>
+                                    <input type="number" placeholder="Fiyat" class="service-price ml-auto w-24 px-2 py-1 border border-gray-300 rounded-md" data-service="Detaylı İç Temizlik">
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="service4" value="Motor Yıkama" class="service-checkbox mr-2">
+                                    <label for="service4" class="text-sm text-gray-700">Motor Yıkama</label>
+                                    <input type="number" placeholder="Fiyat" class="service-price ml-auto w-24 px-2 py-1 border border-gray-300 rounded-md" data-service="Motor Yıkama">
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="service5" value="Pasta Cila" class="service-checkbox mr-2">
+                                    <label for="service5" class="text-sm text-gray-700">Pasta Cila</label>
+                                    <input type="number" placeholder="Fiyat" class="service-price ml-auto w-24 px-2 py-1 border border-gray-300 rounded-md" data-service="Pasta Cila">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="customService" class="block text-sm font-medium text-gray-700 mb-1">Özel Hizmet</label>
+                            <div class="flex space-x-2">
+                                <input type="text" id="customService" class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Hizmet adı">
+                                <input type="number" id="customPrice" class="w-24 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Fiyat">
+                            </div>
+                            <button type="button" id="addCustomService" class="mt-2 px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm">Ekle</button>
+                        </div>
+                        <div>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notlar</label>
+                            <textarea id="notes" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ek notlar..."></textarea>
+                        </div>
+                        <div class="pt-2">
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 font-medium">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-blue-800">Kayıtlar</h2>
+                        <div class="flex space-x-2">
+                            <input type="text" id="searchInput" placeholder="Plaka ara..." class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="searchButton" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Ara</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Tarih</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Plaka</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Araç</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Hizmetler</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">Toplam</th>
+                                    <th class="py-3 px-4 text-left text-sm font-medium text-gray-700">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                    <div id="noRecords" class="text-center py-8 text-gray-500">
+                        Henüz kayıt bulunmamaktadır.
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4 text-blue-800">Günlük Özet</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <h3 class="text-sm font-medium text-blue-800 mb-2">Toplam Araç</h3>
+                            <p id="totalCars" class="text-2xl font-bold text-blue-600">0</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                            <h3 class="text-sm font-medium text-green-800 mb-2">Toplam Hizmet</h3>
+                            <p id="totalServices" class="text-2xl font-bold text-green-600">0</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                            <h3 class="text-sm font-medium text-purple-800 mb-2">Toplam Gelir</h3>
+                            <p id="totalIncome" class="text-2xl font-bold text-purple-600">0 ₺</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="recordDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-blue-800">Kayıt Detayı</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="modalContent" class="space-y-4">
+                </div>
+            <div class="mt-6 flex justify-end">
+                <button id="closeModalButton" class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition duration-300">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize date display
+            const currentDateElement = document.getElementById('currentDate');
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateElement.textContent = today.toLocaleDateString('tr-TR', options);
+
+            // Initialize records from localStorage
+            let records = JSON.parse(localStorage.getItem('carWashRecords')) || [];
+            updateRecordsTable();
+            updateSummary();
+
+            // Form submission
+            document.getElementById('carWashForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Get form values
+                const plateNumber = document.getElementById('plateNumber').value.toUpperCase();
+                const carModel = document.getElementById('carModel').value;
+                const carType = document.getElementById('carType').value;
+                const notes = document.getElementById('notes').value;
+
+                // Get selected services and their prices
+                const services = [];
+                document.querySelectorAll('.service-checkbox:checked').forEach(checkbox => {
+                    const serviceName = checkbox.value;
+                    const priceInput = document.querySelector(`.service-price[data-service="${serviceName}"]`);
+                    const price = parseFloat(priceInput.value) || 0;
+                    services.push({
+                        name: serviceName,
+                        price: price
+                    });
+                });
+                
+                if (services.length === 0) {
+                    alert('Lütfen en az bir hizmet seçin ve fiyatını girin.');
+                    return;
+                }
+
+                // Calculate total price
+                const totalPrice = services.reduce((sum, service) => sum + service.price, 0);
+
+                // Create new record
+                const newRecord = {
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    plateNumber: plateNumber,
+                    carModel: carModel,
+                    carType: carType,
+                    services: services,
+                    totalPrice: totalPrice,
+                    notes: notes
+                };
+
+                // Add to records array
+                records.unshift(newRecord);
+
+                // Save to localStorage
+                localStorage.setItem('carWashRecords', JSON.stringify(records));
+
+                // Update UI
+                updateRecordsTable();
+                updateSummary();
+
+                // Reset form
+                this.reset();
+                // Remove custom services added
+                document.querySelectorAll('.custom-service-item').forEach(item => item.remove());
+
+                // Show success message
+                alert('Kayıt başarıyla eklendi!');
+            });
+
+            // Add custom service
+            document.getElementById('addCustomService').addEventListener('click', function() {
+                const customService = document.getElementById('customService').value;
+                const customPrice = document.getElementById('customPrice').value;
+
+                if (customService && customPrice) {
+                    // Create new checkbox item
+                    const servicesContainer = document.querySelector('.space-y-2');
+                    const newServiceDiv = document.createElement('div');
+                    newServiceDiv.className = 'flex items-center custom-service-item'; // Added custom class to identify for removal
+                    const serviceId = 'service' + (document.querySelectorAll('.service-checkbox').length + 1);
+                    
+                    newServiceDiv.innerHTML = `
+                        <input type="checkbox" id="${serviceId}" value="${customService}" class="service-checkbox mr-2" checked>
+                        <label for="${serviceId}" class="text-sm text-gray-700">${customService}</label>
+                        <input type="number" value="${customPrice}" class="service-price ml-auto w-24 px-2 py-1 border border-gray-300 rounded-md" data-service="${customService}">
+                    `;
+                    servicesContainer.appendChild(newServiceDiv);
+
+                    // Clear inputs
+                    document.getElementById('customService').value = '';
+                    document.getElementById('customPrice').value = '';
+                } else {
+                    alert('Lütfen özel hizmet adı ve fiyatını girin.');
+                }
+            });
+
+            // Search functionality
+            document.getElementById('searchButton').addEventListener('click', function() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                if (searchTerm) {
+                    const filteredRecords = records.filter(record =>
+                        record.plateNumber.toLowerCase().includes(searchTerm) ||
+                        record.carModel.toLowerCase().includes(searchTerm)
+                    );
+                    updateRecordsTable(filteredRecords);
+                } else {
+                    updateRecordsTable();
+                }
+            });
+            
+            // Search on Enter key press
+            document.getElementById('searchInput').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    document.getElementById('searchButton').click();
+                }
+            });
+
+            // Reset search when input is cleared
+            document.getElementById('searchInput').addEventListener('input', function() {
+                if (this.value === '') {
+                    updateRecordsTable();
+                }
+            });
+
+            // Close modal buttons
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('closeModalButton').addEventListener('click', closeModal);
+
+            // Function to update records table
+            function updateRecordsTable(recordsToShow = records) {
+                const tableBody = document.getElementById('recordsTableBody');
+                const noRecordsDiv = document.getElementById('noRecords');
+                tableBody.innerHTML = ''; // Clear table
+
+                if (recordsToShow.length === 0) {
+                    noRecordsDiv.style.display = 'block';
+                    tableBody.style.display = 'none';
+                } else {
+                    noRecordsDiv.style.display = 'none';
+                    tableBody.style.display = '';
+                
+                    recordsToShow.forEach(record => {
+                        const row = document.createElement('tr');
+                        row.className = 'border-b hover:bg-gray-50';
+
+                        const recordDate = new Date(record.date);
+                        const formattedDate = recordDate.toLocaleDateString('tr-TR') + ' ' +
+                                              recordDate.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+
+                        const servicesList = record.services.map(s => s.name).join(', ');
+
+                        row.innerHTML = `
+                            <td class="py-3 px-4 text-sm text-gray-700">${formattedDate}</td>
+                            <td class="py-3 px-4 text-sm font-medium text-gray-900">${record.plateNumber}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700">${record.carModel} (${record.carType})</td>
+                            <td class="py-3 px-4 text-sm text-gray-700">${servicesList}</td>
+                            <td class="py-3 px-4 text-sm font-medium text-gray-900">${record.totalPrice} ₺</td>
+                            <td class="py-3 px-4 text-sm">
+                                <button class="view-details bg-blue-100 text-blue-700 py-1 px-3 rounded-md hover:bg-blue-200 transition duration-300" data-id="${record.id}">Detay</button>
+                                <button class="delete-record bg-red-100 text-red-700 py-1 px-3 rounded-md hover:bg-red-200 transition duration-300" data-id="${record.id}">Sil</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+
+                // Add event listeners to view and delete buttons
+                document.querySelectorAll('.view-details').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const recordId = parseInt(this.getAttribute('data-id'));
+                        showRecordDetails(recordId);
+                    });
+                });
+
+                document.querySelectorAll('.delete-record').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const recordId = parseInt(this.getAttribute('data-id'));
+                        deleteRecord(recordId);
+                    });
+                });
+            }
+
+            // Function to show record details
+            function showRecordDetails(recordId) {
+                const record = records.find(r => r.id === recordId);
+                if (!record) return;
+
+                const modalContent = document.getElementById('modalContent');
+                const recordDate = new Date(record.date);
+                const formattedDate = recordDate.toLocaleDateString('tr-TR') + ' ' +
+                                      recordDate.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+
+                let servicesHtml = '';
+                record.services.forEach(service => {
+                    servicesHtml += `
+                        <div class="flex justify-between">
+                            <span>${service.name}</span>
+                            <span>${service.price} ₺</span>
+                        </div>
+                    `;
+                });
+
+                modalContent.innerHTML = `
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-sm text-gray-500">Tarih:</span>
+                            <p class="font-medium">${formattedDate}</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-500">Plaka:</span>
+                            <p class="font-medium">${record.plateNumber}</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-500">Araç:</span>
+                            <p class="font-medium">${record.carModel} (${record.carType})</p>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-500">Hizmetler:</span>
+                            <div class="mt-1 p-3 bg-gray-50 rounded-md">
+                                ${servicesHtml}
+                                <div class="mt-2 pt-2 border-t border-gray-200 flex justify-between font-medium">
+                                    <span>Toplam</span>
+                                    <span>${record.totalPrice} ₺</span>
+                                </div>
+                            </div>
+                        </div>
+                        ${record.notes ? `
+                        <div>
+                            <span class="text-sm text-gray-500">Notlar:</span>
+                            <p class="mt-1 p-3 bg-gray-50 rounded-md whitespace-pre-wrap">${record.notes}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                document.getElementById('recordDetailModal').classList.remove('hidden');
+            }
+
+            function closeModal() {
+                document.getElementById('recordDetailModal').classList.add('hidden');
+            }
+
+            function deleteRecord(recordId) {
+                if (confirm('Bu kaydı silmek istediğinizden emin misiniz?')) {
+                    records = records.filter(record => record.id !== recordId);
+                    localStorage.setItem('carWashRecords', JSON.stringify(records));
+                    updateRecordsTable();
+                    updateSummary();
+                }
+            }
+
+            function updateSummary() {
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0);
+
+                const todayRecords = records.filter(record => {
+                    const recordDate = new Date(record.date);
+                    return recordDate >= todayStart;
+                });
+
+                const totalCars = todayRecords.length;
+                let totalServices = 0;
+                todayRecords.forEach(record => {
+                    totalServices += record.services.length;
+                });
+                const totalIncome = todayRecords.reduce((sum, record) => sum + record.totalPrice, 0);
+
+                document.getElementById('totalCars').textContent = totalCars;
+                document.getElementById('totalServices').textContent = totalServices;
+                document.getElementById('totalIncome').textContent = totalIncome.toFixed(2) + ' ₺';
+            }
+        });
+    </script>
+</body>
+</html>
